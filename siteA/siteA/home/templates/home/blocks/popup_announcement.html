@@ -1,0 +1,32 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<div class="home-popup" data-home-popup hidden>
+    <div class="home-popup__backdrop" data-home-popup-close></div>
+    <section class="home-popup__dialog" role="dialog" aria-modal="true" aria-labelledby="home-popup-title">
+        <button class="home-popup__close" type="button" aria-label="Close announcement" data-home-popup-close>&times;</button>
+        {% if value.image %}
+        <div class="home-popup__media">
+            {% image value.image fill-1200x720 as popup_image %}
+            <img src="{{ popup_image.url }}" alt="">
+        </div>
+        {% endif %}
+        <div class="home-popup__content">
+            {% if value.eyebrow %}
+            <p class="home-popup__eyebrow">{{ value.eyebrow }}</p>
+            {% endif %}
+            <h2 id="home-popup-title">{{ value.title }}</h2>
+            {% if value.text %}
+            <p class="home-popup__text">{{ value.text|linebreaksbr }}</p>
+            {% endif %}
+            {% if value.button_page or value.button_url %}
+            <div class="home-popup__actions">
+                {% if value.button_page %}
+                <a href="{% pageurl value.button_page %}">{{ value.button_text|default:"Learn more" }}</a>
+                {% elif value.button_url %}
+                <a href="{{ value.button_url }}">{{ value.button_text|default:"Learn more" }}</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</div>

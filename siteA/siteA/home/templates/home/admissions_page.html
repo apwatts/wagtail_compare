@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-admissionspage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/subsite_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/admissions_page.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+{% include "home/includes/subsite_header.html" with subsite_root=subsite_root nav_pages=nav_pages home_page=home_page %}
+<main class="admissions-shell">
+    <section class="admissions-layout" data-admissions-tabs>
+        <aside class="admissions-nav" aria-label="Admissions sections">
+            {% if admissions_sections %}
+            <div class="admissions-nav__inner" role="tablist" aria-orientation="vertical">
+                <p class="admissions-nav__title">{{ page.title }}</p>
+                {% for section in admissions_sections %}
+                <button
+                    class="admissions-nav__button{% if forloop.first %} is-active{% endif %}"
+                    id="admissions-tab-{{ forloop.counter }}"
+                    type="button"
+                    role="tab"
+                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                    aria-controls="admissions-panel-{{ forloop.counter }}"
+                    data-admissions-tab
+                    data-target="admissions-panel-{{ forloop.counter }}"
+                >
+                    {{ section.nav_label }}
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </aside>
+
+        <div class="admissions-panels">
+            {% for section in admissions_sections %}
+            <article
+                class="admissions-panel{% if forloop.first %} is-active{% endif %}"
+                id="admissions-panel-{{ forloop.counter }}"
+                role="tabpanel"
+                aria-labelledby="admissions-tab-{{ forloop.counter }}"
+                {% if not forloop.first %}hidden{% endif %}
+            >
+                <div class="admissions-panel__copy">
+                    <h2>{{ section.heading }}</h2>
+                    {% if section.intro %}
+                    <p class="admissions-panel__intro">{{ section.intro }}</p>
+                    {% endif %}
+                    {% if section.document %}
+                    <p class="admissions-panel__document">
+                        Please <a href="{{ section.document.url }}">click here</a> to see a PDF version of this section.
+                    </p>
+                    {% endif %}
+                    {% if section.body %}
+                    <div class="admissions-panel__body">
+                        {{ section.body|richtext }}
+                    </div>
+                    {% endif %}
+                    {% if section.document or section.button_page or section.button_url %}
+                    <div class="admissions-panel__actions">
+                        {% if section.button_page %}
+                        <a href="{% pageurl section.button_page %}">{{ section.button_text|default:"Learn more" }}</a>
+                        {% elif section.button_url %}
+                        <a href="{{ section.button_url }}">{{ section.button_text|default:"Learn more" }}</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% if section.image %}
+                <div class="admissions-panel__media">
+                    {% image section.image width-1400 class="admissions-panel__image" %}
+                </div>
+                {% endif %}
+            </article>
+            {% empty %}
+            <article class="admissions-panel is-active">
+                <div class="admissions-panel__copy">
+                    <h2>Add admissions sections</h2>
+                    <p class="admissions-panel__intro">Create one or more Admissions sections in the page editor to populate this layout.</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'js/admissions_page.js' %}"></script>
+{% endblock extra_js %}

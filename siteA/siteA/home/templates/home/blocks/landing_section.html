@@ -1,0 +1,75 @@
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+<main class="landing">
+    <section class="subsite-grid" aria-label="Subsites">
+        {% for card in value.cards %}
+        <a class="subsite-card{% if not card.page and not card.url %} is-empty{% endif %}"{% if card.page %} href="{% pageurl card.page %}"{% elif card.url %} href="{{ card.url }}"{% endif %}>
+            {% if card.image %}
+            <div class="subsite-card__media">
+                {% image card.image fill-1320x2140 as landing_card_image %}
+                {% if card.image_portrait %}
+                {% image card.image_portrait fill-1320x2140 as landing_card_image_portrait %}
+                <picture>
+                    <source media="(min-aspect-ratio: 6/5)" srcset="{{ landing_card_image_portrait.url }}">
+                    <img class="subsite-card__image" src="{{ landing_card_image.url }}" alt="">
+                </picture>
+                {% else %}
+                <img class="subsite-card__image" src="{{ landing_card_image.url }}" alt="">
+                {% endif %}
+            </div>
+            {% endif %}
+            <span class="subsite-card__crest" aria-hidden="true">
+                <img src="{% static 'img/mala.svg' %}" alt="">
+            </span>
+            <div class="subsite-card__content">
+                {% if card.label %}
+                <span class="subsite-label">{{ card.label }}</span>
+                {% endif %}
+                <h2>{{ card.title }}</h2>
+                {% if card.text %}
+                <p>{{ card.text }}</p>
+                {% elif card.page %}
+                <p>Open {{ card.page.title }}.</p>
+                {% else %}
+                <p></p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </section>
+
+    <section class="landing-content" aria-label="More content">
+        <article class="landing-panel landing-panel--intro">
+            {% if value.overview_eyebrow %}
+            <p class="landing-panel__eyebrow">{{ value.overview_eyebrow }}</p>
+            {% endif %}
+            {% if value.overview_title %}
+            <h2>{{ value.overview_title }}</h2>
+            {% endif %}
+            {% if value.overview_text %}
+            <p>{{ value.overview_text|linebreaksbr }}</p>
+            {% endif %}
+        </article>
+
+        <div class="landing-content__stack">
+            <article class="landing-panel landing-panel--small">
+                <p class="landing-panel__eyebrow">Highlights</p>
+                {% if value.highlight_one_title %}
+                <h3>{{ value.highlight_one_title }}</h3>
+                {% endif %}
+                {% if value.highlight_one_text %}
+                <p>{{ value.highlight_one_text|linebreaksbr }}</p>
+                {% endif %}
+            </article>
+            <article class="landing-panel landing-panel--small">
+                <p class="landing-panel__eyebrow">Highlights</p>
+                {% if value.highlight_two_title %}
+                <h3>{{ value.highlight_two_title }}</h3>
+                {% endif %}
+                {% if value.highlight_two_text %}
+                <p>{{ value.highlight_two_text|linebreaksbr }}</p>
+                {% endif %}
+            </article>
+        </div>
+    </section>
+</main>

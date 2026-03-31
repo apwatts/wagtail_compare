@@ -1,0 +1,15 @@
+<section class="subsite-hero" id="subsite-overview">
+    <div class="subsite-hero__copy">
+        {% if value.kicker %}
+        <p class="subsite-kicker">{{ value.kicker }}</p>
+        {% endif %}
+        <h1>{{ value.title|default:page.title }}</h1>
+        {% if value.intro %}
+        <p class="subsite-intro">{{ value.intro }}</p>
+        {% elif page.intro %}
+        <p class="subsite-intro">{{ page.intro }}</p>
+        {% elif page.search_description %}
+        <p class="subsite-intro">{{ page.search_description }}</p>
+        {% endif %}
+    </div>
+</section>

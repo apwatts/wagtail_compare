@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block extra_css %}
+
+{% comment %}
+Delete the line below if you're just getting started and want to remove the welcome screen!
+{% endcomment %}
+<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+{% if not landing_section_present %}
+{% include 'home/welcome_page.html' %}
+{% endif %}
+
+{% if page.body %}
+<section class="home-page-body">
+    {% for block in page.body %}
+    <article class="home-page-body__block home-page-body__block--{{ block.block_type }}">
+        {% if block.block_type == "landing_section" %}
+        {% include_block block %}
+        {% elif block.block_type == "popup_announcement" %}
+        {% include_block block %}
+        {% elif block.block_type == "heading" %}
+        <h2>{{ block.value }}</h2>
+        {% elif block.block_type == "paragraph" %}
+        <p>{{ block.value|linebreaksbr }}</p>
+        {% elif block.block_type == "page" %}
+        <p><a href="{% pageurl block.value %}">{{ block.value.title }}</a></p>
+        {% elif block.block_type == "image" %}
+        {% image block.value width-1200 %}
+        {% elif block.block_type == "document" %}
+        <p><a href="{{ block.value.url }}">{{ block.value.title }}</a></p>
+        {% elif block.block_type == "list" %}
+        <ul>
+            {% for item in block.value %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% elif block.block_type == "call_to_action" %}
+        <h3>{{ block.value.title }}</h3>
+        {% if block.value.text %}
+        <p>{{ block.value.text|linebreaksbr }}</p>
+        {% endif %}
+        {% if block.value.button_page %}
+        <p><a href="{% pageurl block.value.button_page %}">{{ block.value.button_text }}</a></p>
+        {% elif block.value.button_url %}
+        <p><a href="{{ block.value.button_url }}">{{ block.value.button_text }}</a></p>
+        {% endif %}
+        {% else %}
+        {{ block }}
+        {% endif %}
+    </article>
+    {% endfor %}
+</section>
+{% endif %}
+
+{% endblock content %}

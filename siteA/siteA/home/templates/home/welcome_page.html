@@ -1,0 +1,70 @@
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+<main class="landing">
+    <section class="subsite-grid" aria-label="Subsites">
+        {% for subsite in subsite_cards %}
+        <a class="subsite-card" href="{% pageurl subsite %}">
+            {% if subsite.hero_image %}
+            <div class="subsite-card__media">
+                {% image subsite.hero_image fill-1320x2140 as subsite_card_image %}
+                <img class="subsite-card__image" src="{{ subsite_card_image.url }}" alt="">
+            </div>
+            {% endif %}
+            <span class="subsite-card__crest" aria-hidden="true">
+                <img src="{% static 'img/mala.svg' %}" alt="">
+            </span>
+            <div class="subsite-card__content">
+                <span class="subsite-label">Chandra Kumala</span>
+                <h2>{{ subsite.title }}</h2>
+                {% if subsite.intro %}
+                <p>{{ subsite.intro|truncatewords:18 }}</p>
+                {% elif subsite.search_description %}
+                <p>{{ subsite.search_description }}</p>
+                {% else %}
+                <p>Open {{ subsite.title }}.</p>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <div class="subsite-card is-empty">
+            <span class="subsite-label">Chandra Kumala</span>
+            <h2>Add child pages</h2>
+            <p>Create three child pages under the home page and they will appear here automatically.</p>
+        </div>
+        <div class="subsite-card is-empty">
+            <span class="subsite-label">Chandra Kumala</span>
+            <h2>Second destination</h2>
+            <p>Use this slot for another subsite landing page.</p>
+        </div>
+        <div class="subsite-card is-empty">
+            <span class="subsite-label">Chandra Kumala</span>
+            <h2>Third destination</h2>
+            <p>Use this slot for the last subsite landing page.</p>
+        </div>
+        {% endfor %}
+    </section>
+
+    <section class="landing-content" aria-label="More content">
+        <article class="landing-panel landing-panel--intro">
+            <p class="landing-panel__eyebrow">Overview</p>
+            <h2>Discover the three learning pathways in one place.</h2>
+            <p>
+                Move from early years through upper levels with a homepage that keeps each subsite visible
+                while still leaving room for supporting content, updates, and highlights below.
+            </p>
+        </article>
+
+        <div class="landing-content__stack">
+            <article class="landing-panel landing-panel--small">
+                <p class="landing-panel__eyebrow">Highlights</p>
+                <h3>Primary</h3>
+                <p>Hands-on classroom moments, practical learning, and a welcoming first step into school life.</p>
+            </article>
+            <article class="landing-panel landing-panel--small">
+                <p class="landing-panel__eyebrow">Highlights</p>
+                <h3>Secondary</h3>
+                <p>Independent thinking, performance, and wider academic exploration across subjects and activities.</p>
+            </article>
+        </div>
+    </section>
+</main>

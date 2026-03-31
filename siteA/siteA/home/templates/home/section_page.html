@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-sectionpage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/subsite_page.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+{% include "home/includes/subsite_header.html" with subsite_root=subsite_root nav_pages=nav_pages %}
+<section class="section-half-hero section-half-hero--{{ section_theme|default:'secondary' }}" aria-label="{{ page.title }}">
+    {% if page.hero_image %}
+    <div class="section-half-hero__media">
+        {% image page.hero_image fill-1800x900 class="section-half-hero__image" %}
+    </div>
+    {% else %}
+    <div class="section-half-hero__fallback" aria-hidden="true"></div>
+    {% endif %}
+    <div class="section-half-hero__overlay"></div>
+    <div class="section-half-hero__content">
+        <p class="subsite-kicker">Section</p>
+        <h1>{{ page.title }}</h1>
+        {% if page.intro %}
+        <p class="section-half-hero__intro">{{ page.intro }}</p>
+        {% elif page.search_description %}
+        <p class="section-half-hero__intro">{{ page.search_description }}</p>
+        {% endif %}
+    </div>
+</section>
+<main class="section-shell">
+    <div class="section-shell__inner">
+        <div class="section-shell__body">
+            {{ page.body|richtext }}
+        </div>
+    </div>
+</main>
+{% endblock %}

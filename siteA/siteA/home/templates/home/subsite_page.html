@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-subsitepage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/subsite_page.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+{% include "home/includes/subsite_header.html" with subsite_root=page nav_pages=nav_pages %}
+<section class="hero-vid" aria-label="Hero video placeholder">
+    {% if page.hero_image %}
+    <div class="hero-vid__media">
+        {% image page.hero_image fill-1600x1000 class="hero-vid__image" %}
+    </div>
+    {% endif %}
+    <div class="hero-vid__backdrop"></div>
+    <div class="hero-vid__content">
+        <p class="hero-vid__eyebrow">{{ current_site.site_name|default:"School Site" }}</p>
+        <h1>Striving for <em>excellence</em></h1>
+        <div class="hero-vid__actions">
+            <a href="#subsite-overview">Explore</a>
+            {% if section_pages %}
+            <a href="{% pageurl section_pages.0 %}">{{ section_pages.0.navigation_title|default:section_pages.0.title }}</a>
+            {% else %}
+            <a href="#section-tiles-title">Key sections</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<main class="subsite-shell">
+    {% if page.hero_content %}
+        {% for block in page.hero_content %}
+            {% include_block block with page=page %}
+        {% endfor %}
+    {% else %}
+    <section class="subsite-hero" id="subsite-overview">
+        <div class="subsite-hero__copy">
+            <p class="subsite-kicker">Subsite</p>
+            <h1>{{ page.title }}</h1>
+            {% if page.intro %}
+            <p class="subsite-intro">{{ page.intro }}</p>
+            {% elif page.search_description %}
+            <p class="subsite-intro">{{ page.search_description }}</p>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <nav class="local-nav" aria-label="Local navigation">
+        <div class="local-nav__inner">
+            <span class="local-nav__label">In this subsite</span>
+            {% for section in section_pages %}
+            <a href="{% pageurl section %}">{{ section.navigation_title }}</a>
+            {% empty %}
+            <span class="local-nav__empty">Add child section pages to populate local navigation.</span>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <section class="section-tiles" aria-labelledby="section-tiles-title">
+        <div class="section-tiles__header">
+            <p class="subsite-kicker">Explore</p>
+            <h2 id="section-tiles-title">Key sections</h2>
+        </div>
+        <div class="section-tiles__grid">
+            {% for section in section_pages %}
+            <a class="section-tile" href="{% pageurl section %}">
+                <span class="section-tile__index">0{{ forloop.counter }}</span>
+                <h3>{{ section.title }}</h3>
+                {% if section.intro %}
+                <p>{{ section.intro|truncatewords:22 }}</p>
+                {% elif section.search_description %}
+                <p>{{ section.search_description|truncatewords:22 }}</p>
+                {% else %}
+                <p>Open {{ section.title }}.</p>
+                {% endif %}
+            </a>
+            {% empty %}
+            <div class="section-tile section-tile--placeholder">
+                <span class="section-tile__index">01</span>
+                <h3>Add section pages</h3>
+                <p>Create child pages under this subsite to populate section tiles automatically.</p>
+            </div>
+            <div class="section-tile section-tile--placeholder">
+                <span class="section-tile__index">02</span>
+                <h3>Admissions</h3>
+                <p>Use section pages for items like admissions, curriculum, pastoral care, or news.</p>
+            </div>
+            <div class="section-tile section-tile--placeholder">
+                <span class="section-tile__index">03</span>
+                <h3>Curriculum</h3>
+                <p>Each section gets its own URL, editor fields, and tile on this landing page.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}
