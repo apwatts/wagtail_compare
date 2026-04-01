@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags wagtailimages_tags %}
 
-{% block body_class %}template-subsitepage{% endblock %}
+{% block body_class %}template-subsitepage{% if page.slug == "childrens-garden" %} template-subsitepage--childrens-garden{% endif %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/subsite_page.css' %}">
@@ -9,6 +9,27 @@
 
 {% block content %}
 {% include "home/includes/subsite_header.html" with subsite_root=page nav_pages=nav_pages %}
+{% if page.slug == "childrens-garden" %}
+{% get_media_prefix as media_prefix %}
+<section class="hero-vid hero-vid--childrens-garden" aria-label="{{ page.title }}">
+    <div class="hero-vid__content hero-vid__content--tk">
+        <p class="hero-vid__eyebrow hero-vid__eyebrow--tk">Nursery &amp; Pre-School</p>
+        <h1 class="hero-vid__title--tk">
+            <span class="hero-vid__title-line hero-vid__title-line--green">A nurturing</span>
+            <span class="hero-vid__title-line hero-vid__title-line--green">environment to</span>
+            <span class="hero-vid__title-line hero-vid__title-line--white">learn,</span>
+            <span class="hero-vid__title-line hero-vid__title-line--white">create</span>
+            <span class="hero-vid__title-line hero-vid__title-line--green">and grow</span>
+        </h1>
+        <div class="hero-vid__actions hero-vid__actions--tk">
+            <a href="#subsite-overview">Book a tour</a>
+        </div>
+    </div>
+    <div class="hero-vid__lower-clouds" aria-hidden="true" data-tk-hero-clouds>
+        <img src="{{ media_prefix }}tk_lower_section_clouds.svg" alt="">
+    </div>
+</section>
+{% else %}
 <section class="hero-vid" aria-label="Hero video placeholder">
     {% if page.hero_image %}
     <div class="hero-vid__media">
@@ -29,8 +50,35 @@
         </div>
     </div>
 </section>
+{% endif %}
 <main class="subsite-shell">
-    {% if page.hero_content %}
+    {% if page.slug == "childrens-garden" %}
+    <section class="tk-overview" id="subsite-overview" aria-labelledby="tk-overview-title" data-tk-overview>
+        <div class="tk-overview__inner">
+            <div class="tk-overview__media">
+                {% if page.hero_image %}
+                {% image page.hero_image fill-900x900 class="tk-overview__image" %}
+                {% endif %}
+            </div>
+            <div class="tk-overview__content">
+                <p class="subsite-kicker subsite-kicker--tk">Early Years</p>
+                <h2 id="tk-overview-title">A warm start for preschool learners</h2>
+                <p class="tk-overview__intro">
+                    Children begin with play, routine, and gentle structure that helps them
+                    grow in confidence before primary school.
+                </p>
+                <div class="tk-overview__highlights">
+                    {% for section in section_pages|slice:":3" %}
+                    <a class="tk-overview__highlight" href="{% pageurl section %}">
+                        <span class="tk-overview__highlight-dot" aria-hidden="true"></span>
+                        <span><strong>{{ section.title }}</strong> Explore this part of the TK experience.</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% elif page.hero_content %}
         {% for block in page.hero_content %}
             {% include_block block with page=page %}
         {% endfor %}
