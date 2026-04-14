@@ -2,7 +2,7 @@
 <header class="subsite-header subsite-header--{{ subsite_root.slug }}" data-subsite-header>
     <div class="subsite-header__inner">
         <div class="subsite-header__brand">
-            <a class="subsite-header__crest-link" href="{% pageurl home_page|default:subsite_root %}">
+            <a class="subsite-header__crest-link" href="{% if crest_link_url %}{{ crest_link_url }}{% else %}{% pageurl home_page|default:subsite_root %}{% endif %}">
                 <span class="subsite-header__crest">
                     <img src="{% static 'img/mala.svg' %}" alt="{{ subsite_root.title }} logo">
                 </span>
@@ -12,10 +12,11 @@
                 <span>{{ current_site.site_name|default:"School Site" }}</span>
             </a>
         </div>
+        {% if show_nav != False %}
         <nav class="subsite-header__nav" aria-label="Subsite sections">
             <div class="subsite-header__menu-panel subsite-header__menu-panel--desktop">
                 {% for item in nav_pages %}
-                <a href="{% pageurl item.page %}">{{ item.label }}</a>
+                <a href="{% if item.url %}{{ item.url }}{% else %}{% pageurl item.page %}{% endif %}">{{ item.label }}</a>
                 {% empty %}
                 <span class="subsite-header__nav-empty">Add sections</span>
                 {% endfor %}
@@ -28,12 +29,13 @@
                 </summary>
                 <div class="subsite-header__menu-panel">
                     {% for item in nav_pages %}
-                    <a href="{% pageurl item.page %}">{{ item.label }}</a>
+                    <a href="{% if item.url %}{{ item.url }}{% else %}{% pageurl item.page %}{% endif %}">{{ item.label }}</a>
                     {% empty %}
                     <span class="subsite-header__nav-empty">Add sections</span>
                     {% endfor %}
                 </div>
             </details>
         </nav>
+        {% endif %}
     </div>
 </header>

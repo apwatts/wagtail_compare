@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel, InlinePanel
@@ -261,10 +262,12 @@ class SubsitePage(Page):
         for shared_item in shared_nav_settings.navigation_items:
             shared_page = shared_item.value["page"].specific
             if shared_page.live and all(item["page"].pk != shared_page.pk for item in nav_items):
+                item_url = f"{shared_page.url}?from={self.url}"
                 nav_items.append(
                     {
                         "page": shared_page,
                         "label": shared_item.value["label"] or shared_page.title,
+                        "url": item_url,
                     }
                 )
 
@@ -302,11 +305,19 @@ class SectionPage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        return_url = request.GET.get("from")
+        if return_url and not url_has_allowed_host_and_scheme(
+            return_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            return_url = ""
         subsite_root = self.get_parent().specific
         context["subsite_root"] = subsite_root
         context["home_page"] = subsite_root.get_parent().specific
         context["nav_pages"] = subsite_root.get_navigation_items(request)
         context["section_theme"] = subsite_root.slug
+        context["crest_link_url"] = return_url
         return context
 
     @property
@@ -343,10 +354,18 @@ class AdmissionsPage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        return_url = request.GET.get("from")
+        if return_url and not url_has_allowed_host_and_scheme(
+            return_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            return_url = ""
         context["home_page"] = self.get_parent().specific
         context["subsite_root"] = self
         context["nav_pages"] = self.get_shared_navigation_items(request)
         context["admissions_sections"] = self.sections.all()
+        context["crest_link_url"] = return_url
         return context
 
 

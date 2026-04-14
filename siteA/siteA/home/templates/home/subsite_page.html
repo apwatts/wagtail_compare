@@ -11,14 +11,12 @@
 {% include "home/includes/subsite_header.html" with subsite_root=page nav_pages=nav_pages %}
 {% if page.slug == "childrens-garden" %}
 {% get_media_prefix as media_prefix %}
-<section class="hero-vid hero-vid--childrens-garden" aria-label="{{ page.title }}">
+<section class="hero-vid hero-vid--childrens-garden" aria-label="{{ page.title }}" data-tk-hero>
     <div class="hero-vid__content hero-vid__content--tk">
         <p class="hero-vid__eyebrow hero-vid__eyebrow--tk">Nursery &amp; Pre-School</p>
         <h1 class="hero-vid__title--tk">
-            <span class="hero-vid__title-line hero-vid__title-line--green">A nurturing</span>
-            <span class="hero-vid__title-line hero-vid__title-line--green">environment to</span>
-            <span class="hero-vid__title-line hero-vid__title-line--white">learn,</span>
-            <span class="hero-vid__title-line hero-vid__title-line--white">create</span>
+            <span class="hero-vid__title-line hero-vid__title-line--green hero-vid__title-line--nowrap">A&nbsp;nurturing&nbsp;environment</span>
+            <span class="hero-vid__title-line hero-vid__title-line--nowrap"><span class="hero-vid__title-line--green">to</span>&nbsp;<span class="hero-vid__title-line--white">learn, create</span></span>
             <span class="hero-vid__title-line hero-vid__title-line--green">and grow</span>
         </h1>
         <div class="hero-vid__actions hero-vid__actions--tk">

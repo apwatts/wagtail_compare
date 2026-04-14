@@ -1,6 +1,6 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-<div class="home-popup" data-home-popup hidden>
+<div class="home-popup" data-home-popup data-home-popup-key="home-popup-{{ value.title|slugify }}" hidden>
     <div class="home-popup__backdrop" data-home-popup-close></div>
     <section class="home-popup__dialog" role="dialog" aria-modal="true" aria-labelledby="home-popup-title">
         <button class="home-popup__close" type="button" aria-label="Close announcement" data-home-popup-close>&times;</button>

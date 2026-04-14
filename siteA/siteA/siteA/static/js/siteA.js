@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     var header = document.querySelector("[data-subsite-header]");
     var footerBrand = document.querySelector("[data-footer-brand]");
+    var tkHero = document.querySelector("[data-tk-hero]");
     var homePopup = document.querySelector("[data-home-popup]");
     var tkOverview = document.querySelector("[data-tk-overview]");
     var tkHeroClouds = document.querySelector("[data-tk-hero-clouds]");
@@ -18,38 +19,67 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener("scroll", syncHeaderState, { passive: true });
     }
 
-    if (tkOverview) {
-        function syncTkOverview() {
+    if (tkHero || tkOverview || tkHeroClouds) {
+        function syncTkLayout() {
+            var isMobile = window.matchMedia("(max-width: 640px)").matches;
             var scrollProgress = Math.min(window.scrollY, 100);
-            var offset = 100 - scrollProgress;
+            var heroOffset = isMobile ? scrollProgress * 0.45 : scrollProgress;
+            var overviewOffset = isMobile ? 18 - (scrollProgress * 0.18) : 50 - (scrollProgress * 0.5);
+            var bottomOffset = isMobile ? -34 + (scrollProgress * 0.34) : -70 + (scrollProgress * 0.7);
 
-            tkOverview.style.transform = "translateY(" + offset.toFixed(1) + "px)";
+            if (tkHero) {
+                tkHero.style.transform = "translateY(" + heroOffset.toFixed(1) + "px)";
+            }
+
+            if (tkOverview) {
+                tkOverview.style.transform = "translateY(" + overviewOffset.toFixed(1) + "px)";
+            }
+
+            if (tkHeroClouds) {
+                tkHeroClouds.style.bottom = bottomOffset.toFixed(1) + "px";
+            }
         }
 
-        syncTkOverview();
-        window.addEventListener("scroll", syncTkOverview, { passive: true });
-        window.addEventListener("resize", syncTkOverview);
-    }
-
-    if (tkHeroClouds) {
-        function syncTkHeroClouds() {
-            var scrollProgress = Math.min(window.scrollY, 100);
-            var bottomOffset = -100 + scrollProgress;
-
-            tkHeroClouds.style.bottom = bottomOffset.toFixed(1) + "px";
-        }
-
-        syncTkHeroClouds();
-        window.addEventListener("scroll", syncTkHeroClouds, { passive: true });
-        window.addEventListener("resize", syncTkHeroClouds);
+        syncTkLayout();
+        window.addEventListener("scroll", syncTkLayout, { passive: true });
+        window.addEventListener("resize", syncTkLayout);
     }
 
     if (homePopup) {
-        function closeHomePopup() {
-            homePopup.hidden = true;
+        var popupStorageKey = homePopup.dataset.homePopupKey;
+
+        function markHomePopupDismissed() {
+            if (!popupStorageKey) {
+                return;
+            }
+
+            try {
+                window.localStorage.setItem(popupStorageKey, "dismissed");
+            } catch (error) {
+                return;
+            }
         }
 
-        homePopup.hidden = false;
+        function isHomePopupDismissed() {
+            if (!popupStorageKey) {
+                return false;
+            }
+
+            try {
+                return window.localStorage.getItem(popupStorageKey) === "dismissed";
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function closeHomePopup() {
+            homePopup.hidden = true;
+            markHomePopupDismissed();
+        }
+
+        if (!isHomePopupDismissed()) {
+            homePopup.hidden = false;
+        }
 
         homePopup.querySelectorAll("[data-home-popup-close]").forEach(function (element) {
             element.addEventListener("click", closeHomePopup);
